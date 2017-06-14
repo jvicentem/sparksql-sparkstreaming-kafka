@@ -4,9 +4,10 @@ import time
 import sys, os
 import logging
 import csv
+import ujson
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     try:
         logging.info("Initialization...")
         producer = KafkaProducer(bootstrap_servers='localhost:9092')
@@ -40,7 +41,7 @@ if __name__ == '__main__':
                             time_to_sleep = random.uniform(float(0.0), float(0.3))
                         
                         logging.info('Sleeping for %f seconds' % time_to_sleep)
-                        producer.send(topic, bytes(line, 'utf8'))
+                        producer.send(topic, bytes(ujson.dumps(line, escape_forward_slashes=False, encode_html_chars=False, ensure_ascii=False), 'utf8'))
                         time.sleep(time_to_sleep)                         
 
                         line = next_line
